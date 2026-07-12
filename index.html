@@ -1,11 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Novexa AI</title>
+
+    <meta name="theme-color" content="#2563eb">
+
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
+
 <body>
+
+<div class="app">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+
+        <div class="sidebar-header">
+            <h2>Novexa AI</h2>
+        </div>
+
+        <button id="new-chat-btn" class="sidebar-btn">
+            <i class="fas fa-plus"></i>
+            <span>New Chat</span>
+        </button>
+
+        <button class="sidebar-btn">
+            <i class="fas fa-clock"></i>
+            <span>History</span>
+        </button>
+
+        <button class="sidebar-btn">
+            <i class="fas fa-gear"></i>
+            <span>Settings</span>
+        </button>
+
+        <button class="sidebar-btn">
+            <i class="fas fa-circle-info"></i>
+            <span>About</span>
+        </button>
+
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+        <header class="top-bar">
+
+            <button id="menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <h1>Novexa AI</h1>
+
+        </header>
+
+        <section id="chat-box" class="chat-box">
+
+            <div class="welcome">
+
+                <i class="fas fa-robot"></i>
+
+                <h2>Welcome to Novexa AI</h2>
+
+                <p>Your Smart AI Assistant</p>
+
+            </div>
+
+        </section>
+
+        <div id="typing" class="typing" style="display:none;">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="input-area">
+
+            <button id="voice-btn">
+                <i class="fas fa-microphone"></i>
+            </button>
+
+            <input
+                id="user-input"
+                type="text"
+                placeholder="Ask anything...">
+
+            <button id="send-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="script.js"></script>
 
 </body>
 </html>
