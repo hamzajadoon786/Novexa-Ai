@@ -1,315 +1,463 @@
 /* ==========================================
-   Novexa AI - style.css
-   Part 1
+   NOVEXA AI - STYLE.CSS
+   PART 1 / 4
+   Global Reset + Variables + Layout
 ========================================== */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Reset */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-:root {
-    --bg: #0f172a;
-    --card: #1e293b;
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --text: #ffffff;
-    --text-light: #cbd5e1;
-    --border: #334155;
-    --success: #22c55e;
-    --danger: #ef4444;
+html{
+    scroll-behavior:smooth;
 }
 
-body {
-    font-family: "Poppins", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    overflow: hidden;
+body{
+    font-family:'Poppins',sans-serif;
+    background:#0f172a;
+    color:#ffffff;
+    overflow:hidden;
 }
 
-.app {
-    display: flex;
-    width: 100%;
-    height: 100vh;
+/* Variables */
+
+:root{
+
+    --bg:#0f172a;
+    --bg2:#111827;
+    --card:#1e293b;
+    --card2:#273549;
+
+    --primary:#2563eb;
+    --primary-hover:#1d4ed8;
+
+    --text:#ffffff;
+    --text-light:#cbd5e1;
+
+    --border:#334155;
+
+    --user:#2563eb;
+    --ai:#1e293b;
+
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+
+    --radius:18px;
+
+    --transition:.3s ease;
+
 }
 
-.sidebar {
-    width: 260px;
-    background: var(--card);
-    border-right: 1px solid var(--border);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
+/* App */
+
+.app{
+    width:100%;
+    height:100vh;
+    display:flex;
+    overflow:hidden;
+    background:var(--bg);
 }
 
-.sidebar-header {
-    margin-bottom: 25px;
+/* Sidebar */
+
+.sidebar{
+
+    width:260px;
+    background:var(--bg2);
+
+    border-right:1px solid var(--border);
+
+    display:flex;
+    flex-direction:column;
+
+    transition:var(--transition);
+
+    box-shadow:var(--shadow);
+
+    z-index:100;
+
 }
 
-.sidebar-header h2 {
-    color: var(--primary);
-    font-size: 24px;
-    font-weight: 700;
+/* Sidebar Header */
+
+.sidebar-header{
+
+    padding:25px;
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
 }
 
-.sidebar-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: 14px;
-    border-radius: 12px;
-    cursor: pointer;
-    margin-bottom: 12px;
-    transition: 0.3s;
-    font-size: 15px;
+.sidebar-header h2{
+
+    font-size:24px;
+
+    color:#fff;
+
+    font-weight:700;
+
 }
 
-.sidebar-btn:hover {
-    background: var(--primary);
-    border-color: var(--primary);
+/* Sidebar Buttons */
+
+.sidebar-btn{
+
+    width:90%;
+
+    margin:10px auto;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    color:#fff;
+
+    padding:14px 18px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+    font-size:15px;
+
 }
 
-.sidebar-btn i {
-    font-size: 18px;
+.sidebar-btn i{
+
+    width:20px;
+
+    text-align:center;
+
 }
 
-.main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
+.sidebar-btn:hover{
+
+    background:rgba(37,99,235,.15);
+
+    color:#60a5fa;
+
+}
+
+/* Main */
+
+.main{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    height:100vh;
+
+    overflow:hidden;
+
+}
+
+/* Top Bar */
+
+.top-bar{
+
+    height:70px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-start;
+
+    gap:18px;
+
+    padding:0 20px;
+
+    background:var(--bg2);
+
+    border-bottom:1px solid var(--border);
+
+}
+
+.top-bar h1{
+
+    font-size:22px;
+
+    font-weight:600;
+
+    color:#fff;
+
+}
+
+/* Menu Button */
+
+#menu-btn{
+
+    width:45px;
+
+    height:45px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:var(--card);
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+    font-size:18px;
+
+}
+
+#menu-btn:hover{
+
+    background:var(--primary);
+
+}
+
+/* Chat Box */
+
+.chat-box{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:25px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+    background:var(--bg);
+
+}
 /* ==========================================
-   Novexa AI - style.css
-   Part 2
+   NOVEXA AI - STYLE.CSS
+   PART 2 / 4
+   Welcome + Messages
 ========================================== */
 
-.top-bar {
-    height: 70px;
-    background: var(--card);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 0 20px;
+/* Welcome Screen */
+
+.welcome{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    color:var(--text-light);
+    padding:30px;
 }
 
-.top-bar h1 {
-    font-size: 22px;
-    font-weight: 600;
+.welcome i{
+    font-size:70px;
+    color:var(--primary);
+    margin-bottom:20px;
 }
 
-#menu-btn {
-    width: 45px;
-    height: 45px;
-    border: none;
-    border-radius: 10px;
-    background: var(--primary);
-    color: #fff;
-    cursor: pointer;
-    font-size: 18px;
-    transition: 0.3s;
+.welcome h2{
+    font-size:32px;
+    color:#fff;
+    margin-bottom:10px;
+    font-weight:700;
 }
 
-#menu-btn:hover {
-    background: var(--primary-hover);
+.welcome p{
+    font-size:16px;
+    color:var(--text-light);
 }
 
-.chat-box {
-    flex: 1;
-    overflow-y: auto
-  /* ==========================================
-   Novexa AI - style.css
-   Part 3
+/* Message Row */
+
+.message{
+    width:100%;
+    display:flex;
+    margin:8px 0;
+    animation:fade
+   /* ==========================================
+   NOVEXA AI - STYLE.CSS
+   PART 3 / 4
+   Typing + Input Area
 ========================================== */
 
-.typing {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 15px 25px;
+/* Typing Indicator */
+
+.typing{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:12px 20px;
+    margin:0 20px 15px;
+    width:max-content;
+    background:var(--ai);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:var(--shadow);
 }
 
-.typing span {
-    width: 8px;
-    height: 8px;
-    background: var(--primary);
-    border-radius: 50%;
-    animation: typing 1.2s infinite;
+.typing span{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#60a5fa;
+    animation:typingBounce 1.4s infinite ease-in-out;
 }
 
-.typing span:nth-child(2) {
-    animation-delay: .2s;
+.typing span:nth-child(2){
+    animation-delay:.2s;
 }
 
-.typing span:nth-child(3) {
-    animation-delay: .4s;
+.typing span:nth-child(3){
+    animation-delay:.4s;
 }
 
-@keyframes typing {
-    0%, 80%, 100% {
-        transform: scale(.8);
-        opacity: .5;
-    }
+/* Input Area */
 
-    40% {
-        transform: scale(1.3);
-        opacity: 1;
-    }
+.input-area{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 20px;
+    background:var(--bg2);
+    border-top:1px solid var(--border);
 }
 
-.input-area {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 18px 20px;
-    background: var(--card);
-    border-top: 1px solid var(--border);
+/* Input */
+
+#user-input{
+    flex:1;
+    height:52px;
+    border:1px solid var(--border);
+    outline:none;
+    background:var(--card);
+    color:var(--text);
+    border-radius:14px;
+    padding:0 18px;
+    font-size:15px;
+    transition:var(--transition);
 }
 
-#user-input {
-    flex: 1;
-    height: 52px;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: #0f172a;
-    color: var(--text);
-    padding: 0 16px;
-    font-size: 15px;
-    outline: none;
-    transition: .3s;
+#user-input::placeholder{
+    color:#94a3b8;
 }
 
-#user-input:focus {
-    border-color: var(--primary);
+#user-input:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,.2);
 }
 
-#user-input::placeholder {
-    color: var(--text-light);
+/* Buttons */
+
+#voice-btn,
+#send-btn{
+    width:52px;
+    height:52px;
+    border:none;
+    outline:none;
+    border-radius:14px;
+    background:var(--primary);
+    color:#fff;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:18px;
+    transition:var(--transition);
 }
 
-#send-btn,
-#voice-btn {
-    width: 52px;
-    height: 52px;
-    border: none;
-    border-radius: 14px;
-    background: var(--primary);
-    color: #fff;
-    cursor: pointer;
-    font-size: 18px;
-    transition: .3s;
+#voice-btn:hover,
+#send-btn:hover{
+    background:var(--primary-hover);
+    transform:translateY(-2px);
 }
 
-#send-btn:hover,
-#voice-btn:hover {
-    background: var(--primary-hover);
-  }
-  /* ==========================================
-   Novexa AI - style.css
-   Part 4 (Responsive + Scrollbar)
+#voice-btn:active,
+#send-btn:active{
+    transform:scale(.96);
+}
+
+/* Disabled Send */
+
+#send-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+    transform:none;
+}
+
+/* Input Area Shadow */
+
+.input-area{
+    box-shadow:0 -5px 20px rgba(0,0,0,.15);
+}
+
+/* Selection */
+
+::selection{
+    background:var(--primary);
+    color:#fff;
+   }
+   /* ==========================================
+   NOVEXA AI - STYLE.CSS
+   PART 4 / 4 (FINAL)
+   Responsive + Scrollbar + Animations
 ========================================== */
 
-.chat-box::-webkit-scrollbar {
-    width: 8px;
+/* Scrollbar */
+
+.chat-box::-webkit-scrollbar{
+    width:8px;
 }
 
-.chat-box::-webkit-scrollbar-track {
-    background: transparent;
+.chat-box::-webkit-scrollbar-track{
+    background:transparent;
 }
 
-.chat-box::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 20px;
+.chat-box::-webkit-scrollbar-thumb{
+    background:#475569;
+    border-radius:20px;
 }
 
-.chat-box::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+.chat-box::-webkit-scrollbar-thumb:hover{
+    background:#64748b;
 }
 
-button {
-    font-family: inherit;
-}
+/* Animations */
 
-input {
-    font-family: inherit;
-}
-
-@media (max-width: 900px) {
-
-    .sidebar {
-        position: fixed;
-        left: -280px;
-        top: 0;
-        width: 260px;
-        height: 100%;
-        z-index: 1000;
-        transition: left .3s ease;
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(12px);
     }
-
-    .sidebar.active {
-        left: 0;
-    }
-
-    .main {
-        width: 100%;
-    }
-
-    .welcome h2 {
-        font-size: 26px;
-    }
-
-    .welcome p {
-        font-size: 15px;
-    }
-
-    .chat-message {
-        max-width: 90%;
+    to{
+        opacity:1;
+        transform:translateY(0);
     }
 }
 
-@media (max-width: 600px
-        /* ==========================================
-   Novexa AI - style.css
-   Part 5 (Final)
-========================================== */
-
-.sidebar-btn:active,
-#menu-btn:active,
-#send-btn:active,
-#voice-btn:active {
-    transform: scale(0.96);
-}
-
-button {
-    transition: all 0.3s ease;
-}
-
-#user-input {
-    transition: all 0.3s ease;
-}
-
-.chat-message {
-    animation: fadeIn 0.25s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.welcome {
-    padding
+@keyframes typingBounce{
+    0%,80
