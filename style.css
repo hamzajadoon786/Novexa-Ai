@@ -298,7 +298,122 @@ body{
     width:100%;
     display:flex;
     margin:8px 0;
-    animation:fade
+    animation: fadeIn .3s ease;
+}
+
+.message.user{
+    justify-content:flex-end;
+}
+
+.message.ai{
+    justify-content:flex-start;
+}
+
+.bubble{
+    max-width:80%;
+    padding:14px 18px;
+    border-radius:18px;
+    line-height:1.7;
+    font-size:15px;
+    word-wrap:break-word;
+    white-space:pre-wrap;
+    box-shadow:var(--shadow);
+}
+
+.message.user .bubble{
+    background:var(--user);
+    color:#fff;
+    border-bottom-right-radius:6px;
+}
+
+.message.ai .bubble{
+    background:var(--ai);
+    color:#fff;
+    border:1px solid var(--border);
+    border-bottom-left-radius:6px;
+}
+
+.avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 10px;
+    flex-shrink:0;
+    font-size:18px;
+}
+
+.message.user .avatar{
+    order:2;
+    background:var(--primary);
+    color:#fff;
+}
+
+.message.ai .avatar{
+    background:#1f2937;
+    border:1px solid var(--border);
+    color:#60a5fa;
+}
+
+.message-content{
+    display:flex;
+    flex-direction:column;
+    max-width:80%;
+}
+
+.message-time{
+    margin-top:6px;
+    font-size:12px;
+    color:#94a3b8;
+}
+
+.message.user .message-time{
+    text-align:right;
+}
+
+.message.ai .message-time{
+    text-align:left;
+}
+
+.bubble a{
+    color:#93c5fd;
+    text-decoration:none;
+}
+
+.bubble a:hover{
+    text-decoration:underline;
+}
+
+.bubble ul,
+.bubble ol{
+    margin:10px 0 10px 20px;
+}
+
+.bubble li{
+    margin:6px 0;
+}
+
+.bubble code{
+    background:#0f172a;
+    padding:2px 6px;
+    border-radius:6px;
+    font-size:14px;
+}
+
+.bubble pre{
+    background:#0b1120;
+    padding:14px;
+    border-radius:12px;
+    overflow:auto;
+    margin-top:10px;
+}
+
+.bubble pre code{
+    background:none;
+    padding:0;
+}
    /* ==========================================
    NOVEXA AI - STYLE.CSS
    PART 3 / 4
@@ -459,5 +574,15 @@ body{
     }
 }
 
+
 @keyframes typingBounce{
-    0%,80
+    0%,80%,100%{
+        transform: scale(.7);
+        opacity: .5;
+    }
+
+    40%{
+        transform: scale(1);
+        opacity: 1;
+    }
+}
