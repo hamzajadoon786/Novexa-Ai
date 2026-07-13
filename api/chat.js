@@ -29,7 +29,9 @@ export default async function handler(req, res) {
         },
 
         body: JSON.stringify({
-          model: "openai/gpt-4.1-mini",
+          model: "deepseek/deepseek-r1:free",
+
+          max_tokens: 1000,
           messages: [
             {
               role: "system",
