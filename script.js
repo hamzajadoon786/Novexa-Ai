@@ -362,7 +362,27 @@ window.addEventListener("resize", () => {
 // ===============================
 
 console.log("Novexa AI Loaded Successfully");
+// ===============================
+// Send Button
+// ===============================
 
+sendBtn.addEventListener("click", sendMessage);
+
+// ===============================
+// Enter Key
+// ===============================
+
+userInput.addEventListener("keydown", (e) => {
+
+    if (e.key === "Enter" && !e.shiftKey) {
+
+        e.preventDefault();
+
+        sendMessage();
+
+    }
+
+});
 // ==========================================
 // END OF SCRIPT.JS
 // ==========================================
