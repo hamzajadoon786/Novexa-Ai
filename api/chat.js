@@ -29,7 +29,7 @@ export default async function handler(req, res) {
         },
 
         body: JSON.stringify({
-          model: "deepseek/deepseek-r1:free",
+         model: "google/gemma-3-12b-it:free",
 
           max_tokens: 1000,
           messages: [
