@@ -23,7 +23,9 @@ export default async function handler(req, res) {
 
         headers: {
           "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://novexa-ai-six.vercel.app",
+          "X-Title": "Novexa AI"
         },
 
         body: JSON.stringify({
@@ -39,6 +41,7 @@ export default async function handler(req, res) {
             }
           ]
         })
+
       }
     );
 
@@ -62,5 +65,5 @@ export default async function handler(req, res) {
 
   }
 
-    }
+}
 
