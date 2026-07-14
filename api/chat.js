@@ -17,33 +17,24 @@ export default async function handler(req, res) {
     }
 
     const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
-
         headers: {
-          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://novexa-ai-six.vercel.app",
-          "X-Title": "Novexa AI"
+          "Content-Type": "application/json"
         },
-
         body: JSON.stringify({
-         model: "google/gemma-3-12b-it:free",
-
-          max_tokens: 1000,
-          messages: [
-            {
-              role: "system",
-              content: "You are Novexa AI, a helpful AI assistant."
-            },
+          contents: [
             {
               role: "user",
-              content: message
+              parts: [
+                {
+                  text: `You are Novexa AI, a helpful AI assistant.\n\nUser: ${message}`
+                }
+              ]
             }
           ]
         })
-
       }
     );
 
@@ -51,12 +42,12 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       return res.status(response.status).json({
-        error: data.error?.message || "OpenRouter Error"
+        error: data.error?.message || "Gemini API Error"
       });
     }
 
     return res.status(200).json({
-      reply: data.choices[0].message.content
+      reply: data.candidates?.[0]?.content?.parts?.[0]?.text || "No response received."
     });
 
   } catch (error) {
@@ -67,5 +58,4 @@ export default async function handler(req, res) {
 
   }
 
-}
-
+} 
