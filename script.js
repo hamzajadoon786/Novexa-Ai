@@ -481,4 +481,167 @@ async function sendMessage() {
 /* ==========================================
    END PART 2
 ========================================== */
- 
+ /* ==========================================
+   NOVEXA AI - SCRIPT.JS
+   PART 3 / 4
+   ========================================== */
+
+// Voice Recognition
+let recognition = null;
+
+if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+
+    const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    recognition = new SpeechRecognition();
+
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+        voiceBtn.classList.add("listening");
+    };
+
+    recognition.onend = () => {
+        voiceBtn.classList.remove("listening");
+    };
+
+    recognition.onerror = (event) => {
+        console.error("Voice Error:", event.error);
+
+        createMessage(
+            "Voice recognition failed. Please try again.",
+            "ai"
+        );
+    };
+
+    recognition.onresult = (event) => {
+
+        const transcript =
+            event.results[0][0].transcript;
+
+        userInput.value = transcript;
+
+        sendMessage();
+    };
+
+    voiceBtn.addEventListener("click", () => {
+
+        if (state.loading) return;
+
+        recognition.start();
+
+    });
+
+} else {
+
+    voiceBtn.style.display = "none";
+
+}
+
+
+// Enter Key Support
+userInput.addEventListener("keydown", (e) => {
+
+    if (e.key === "Enter" && !e.shiftKey) {
+
+        e.preventDefault();
+
+        sendMessage();
+
+    }
+
+});
+
+
+// Auto Resize Input
+userInput.addEventListener("input", () => {
+
+    userInput.style.height = "auto";
+
+    userInput.style.height =
+        userInput.scrollHeight + "px";
+
+});
+/* ==========================================
+   NOVEXA AI - SCRIPT.JS
+   PART 4 / 4
+   ========================================== */
+
+// Initialize App
+function init() {
+
+    loadMemory();
+
+    updateSendButton();
+
+    userInput.focus();
+
+    createMessage(
+        "Hello! 👋 I am Novexa AI. How can I help you today?",
+        "ai"
+    );
+
+}
+
+// Send Button
+sendBtn.addEventListener("click", sendMessage);
+
+// New Chat
+if (newChatBtn) {
+
+    newChatBtn.addEventListener("click", () => {
+
+        if (confirm("Start a new chat?")) {
+
+            state.memory = [];
+
+            saveMemory();
+
+            chatBox.innerHTML = "";
+
+            createMessage(
+                "New chat started. How can I help you?",
+                "ai"
+            );
+
+        }
+
+    });
+
+}
+
+// Sidebar Toggle
+if (menuBtn && sidebar) {
+
+    menuBtn.addEventListener("click", () => {
+
+        sidebar.classList.toggle("open");
+
+    });
+
+}
+
+// Close sidebar on mobile
+document.addEventListener("click", (e) => {
+
+    if (
+        sidebar &&
+        menuBtn &&
+        !sidebar.contains(e.target) &&
+        !menuBtn.contains(e.target)
+    ) {
+        sidebar.classList.remove("open");
+    }
+
+});
+
+// Start App
+window.addEventListener("load", init);
+
+/* ==========================================
+   END OF SCRIPT
+   NOVEXA AI v1.0
+   ========================================== */
