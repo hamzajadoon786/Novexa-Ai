@@ -1,3 +1,4 @@
+import { auth, db } from "./firebase.js";
 /* ==========================================
    NOVEXA AI - SCRIPT.JS
    PART 1 / 4
