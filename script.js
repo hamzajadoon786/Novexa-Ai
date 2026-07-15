@@ -1,77 +1,111 @@
-import { auth, db } from "./firebase.js";
 /* ==========================================
-   NOVEXA AI - SCRIPT.JS
-   PART 1 / 4
+   NOVEXA AI
+   SCRIPT.JS
+   PART 1A
+   ========================================== */
+
+import { auth, db } from "./firebase.js";
+
+/* ==========================================
+   APP CONFIG
+   ========================================== */
+
+const APP = {
+    NAME: "Novexa AI",
+    VERSION: "4.0.0",
+    API_URL: "/api/chat",
+    STORAGE_KEY: "novexa_chat_v4"
+};
+
+/* ==========================================
+   DOM ELEMENTS
    ========================================== */
 
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 const voiceBtn = document.getElementById("voice-btn");
-const newChatBtn = document.getElementById("new-chat-btn");
 const menuBtn = document.getElementById("menu-btn");
+const newChatBtn = document.getElementById("new-chat-btn");
 const sidebar = document.getElementById("sidebar");
 const typing = document.getElementById("typing");
 
-const API_URL = "/api/chat";
+/* ==========================================
+   APP STATE
+   ========================================== */
 
-let isTyping = false;
+const state = {
+    loading: false,
+    typing: false,
+    messages: [],
+    user: null
+};
 
-// ===============================
-// Time
-// ===============================
+/* ==========================================
+   DATE & TIME
+   ========================================== */
 
-function getTime() {
-    const now = new Date();
+function getCurrentTime() {
 
-    return now.toLocaleTimeString([], {
+    return new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit"
     });
+
 }
 
-// ===============================
-// Scroll Bottom
-// ===============================
+/* ==========================================
+   SCROLL
+   ========================================== */
 
-function scrollBottom() {
-    chatBox.scrollTop = chatBox.scrollHeight;
+function scrollToBottom() {
+
+    requestAnimationFrame(() => {
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+    });
+
 }
 
-// ===============================
-// Save Chat
-// ===============================
+/* ==========================================
+   LOCAL STORAGE
+   ========================================== */
 
 function saveChat() {
+
     localStorage.setItem(
-        "novexa_chat",
+        APP.STORAGE_KEY,
         chatBox.innerHTML
     );
-}
 
-// ===============================
-// Load Chat
-// ===============================
+}
 
 function loadChat() {
 
-    const data = localStorage.getItem("novexa_chat");
+    const savedChat = localStorage.getItem(APP.STORAGE_KEY);
 
-    if (data) {
+    if (savedChat) {
 
-        chatBox.innerHTML = data;
+        chatBox.innerHTML = savedChat;
 
     }
 
-    scrollBottom();
+    scrollToBottom();
 
 }
 
-// ===============================
-// Remove Welcome Screen
-// ===============================
+function clearChatStorage() {
 
-function removeWelcome() {
+    localStorage.removeItem(APP.STORAGE_KEY);
+
+}
+
+/* ==========================================
+   WELCOME SCREEN
+   ========================================== */
+
+function removeWelcomeScreen() {
 
     const welcome = document.querySelector(".welcome");
 
@@ -83,195 +117,149 @@ function removeWelcome() {
 
 }
 
-// ===============================
-// Create Message
-// ===============================
+/* ==========================================
+   TYPING INDICATOR
+   ========================================== */
 
-function addMessage(text, sender) {
+function showTyping() {
 
-    removeWelcome();
+    state.typing = true;
+
+    typing.style.display = "flex";
+
+    scrollToBottom();
+
+}
+
+function hideTyping() {
+
+    state.typing = false;
+
+    typing.style.display = "none";
+
+}
+
+/* ==========================================
+   END OF PART 1A
+   ========================================== */
+
+ /* ==========================================
+   NOVEXA AI
+   SCRIPT.JS
+   PART 1B
+========================================== */
+
+/* ==========================================
+   CREATE MESSAGE
+========================================== */
+
+function createMessage(text, sender = "ai") {
+
+    removeWelcomeScreen();
 
     const row = document.createElement("div");
-
     row.className = `message ${sender}`;
 
     const avatar = document.createElement("div");
-
     avatar.className = "avatar";
 
     avatar.innerHTML =
         sender === "user"
-        ? '<i class="fas fa-user"></i>'
-        : '<i class="fas fa-robot"></i>';
+            ? '<i class="fas fa-user"></i>'
+            : '<i class="fas fa-robot"></i>';
 
     const content = document.createElement("div");
-
     content.className = "message-content";
 
     const bubble = document.createElement("div");
-
     bubble.className = "bubble";
-
     bubble.textContent = text;
 
     const time = document.createElement("div");
-
     time.className = "message-time";
-
-    time.textContent = getTime();
+    time.textContent = getCurrentTime();
 
     content.appendChild(bubble);
-
     content.appendChild(time);
 
     if (sender === "user") {
 
         row.appendChild(content);
-
         row.appendChild(avatar);
 
     } else {
 
         row.appendChild(avatar);
-
         row.appendChild(content);
 
     }
 
     chatBox.appendChild(row);
 
-    scrollBottom();
+    scrollToBottom();
 
     saveChat();
 
-  }
+}
+
 /* ==========================================
-   NOVEXA AI - SCRIPT.JS
-   PART 2 / 4
-   API + Typing + Send Message
+   CHAT MEMORY
 ========================================== */
 
-// ===============================
-// Typing Indicator
-// ===============================
+function addToMemory(role, content) {
 
-function showTyping() {
+    state.messages.push({
 
-    typing.style.display = "flex";
-
-    isTyping = true;
-
-    scrollBottom();
-
-}
-
-function hideTyping() {
-
-    typing.style.display = "none";
-
-    isTyping = false;
-
-}
-
-// ===============================
-// Send Message To AI
-// ===============================
-
-async function sendMessage() {
-
-    const message = userInput.value.trim();
-
-    if (!message || isTyping) return;
-  addMessage(message, "user");
-
-userInput.value = "";
-
-showTyping();
-
-sendBtn.disabled = true;
-
-try {
-
-    const response = await fetch(API_URL, {
-
-        method: "POST",
-
-        headers: {
-            "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-            message: message
-        })
+        role,
+        content
 
     });
 
-    const data = await response.json();
+    if (state.messages.length > 20) {
 
-    hideTyping();
-
-    sendBtn.disabled = false;
-
-    if (!response.ok) {
-
-        addMessage(
-            data.error || "Server Error",
-            "ai"
-        );
-
-        return;
+        state.messages.shift();
 
     }
 
-    addMessage(data.reply, "ai");
-
-} catch (error) {
-
-    hideTyping();
-
-    sendBtn.disabled = false;
-
-    addMessage(
-        "Connection Error. Please try again.",
-        "ai"
-    );
-
-    console.error(error);
-
 }
 
-}
 /* ==========================================
-   NOVEXA AI - SCRIPT.JS
-   PART 3 / 4
-   Events + Sidebar + New Chat
+   RESET CHAT
 ========================================== */
 
-// ===============================
-// New Chat
-// ===============================
+function resetChat() {
+
+    clearChatStorage();
+
+    state.messages = [];
+
+    chatBox.innerHTML = `
+    <div class="welcome">
+        <i class="fas fa-robot"></i>
+        <h2>Welcome to Novexa AI</h2>
+        <p>Your Smart AI Assistant</p>
+    </div>
+    `;
+
+}
+
+/* ==========================================
+   NEW CHAT BUTTON
+========================================== */
 
 newChatBtn.addEventListener("click", () => {
 
     if (confirm("Start a new chat?")) {
 
-        localStorage.removeItem("novexa_chat");
-
-        chatBox.innerHTML = `
-        <div class="welcome">
-            <i class="fas fa-robot"></i>
-            <h2>Welcome to Novexa AI</h2>
-            <p>Your Smart AI Assistant</p>
-        </div>
-        `;
+        resetChat();
 
     }
 
 });
 
-// ===============================
-// Sidebar Toggle
-// ===============================
+/* ==========================================
+   SIDEBAR
+========================================== */
 
 menuBtn.addEventListener("click", () => {
 
@@ -279,9 +267,9 @@ menuBtn.addEventListener("click", () => {
 
 });
 
-// ===============================
-// Auto Focus
-// ===============================
+/* ==========================================
+   WINDOW LOAD
+========================================== */
 
 window.addEventListener("load", () => {
 
@@ -291,87 +279,80 @@ window.addEventListener("load", () => {
 
 });
 
-// ===============================
-// Voice Button
-// ===============================
+/* ==========================================
+   END OF PART 1B
+========================================== */
+/* ==========================================
+   NOVEXA AI
+   SCRIPT.JS
+   PART 1C
+========================================== */
+
+/* ==========================================
+   INPUT VALIDATION
+========================================== */
+
+function updateSendButton() {
+
+    sendBtn.disabled = userInput.value.trim().length === 0 || state.loading;
+
+}
+
+userInput.addEventListener("input", updateSendButton);
+
+/* ==========================================
+   VOICE RECOGNITION
+========================================== */
 
 voiceBtn.addEventListener("click", () => {
 
-    if (!("webkitSpeechRecognition" in window)) {
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
 
-        alert("Voice recognition is not supported.");
+    if (!SpeechRecognition) {
+
+        alert("Voice recognition is not supported on this device.");
 
         return;
 
     }
 
-    const recognition = new webkitSpeechRecognition();
+    const recognition = new SpeechRecognition();
 
     recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
     recognition.start();
 
-    recognition.onresult = function(event) {
+    recognition.onresult = (event) => {
 
-        userInput.value =
-            event.results[0][0].transcript;
+        userInput.value = event.results[0][0].transcript;
+
+        updateSendButton();
 
     };
 
 });
+
 /* ==========================================
-   NOVEXA AI - SCRIPT.JS
-   PART 4 / 4 (FINAL)
+   SEND MESSAGE PLACEHOLDER
 ========================================== */
 
-// ===============================
-// Prevent Empty Spaces
-// ===============================
+async function sendMessage() {
 
-userInput.addEventListener("input", () => {
+    // Part 2 میں مکمل Mistral API آئے گی
 
-    if (userInput.value.trim().length > 0) {
-        sendBtn.disabled = false;
-    } else {
-        sendBtn.disabled = true;
-    }
+    console.log("sendMessage()");
 
-});
+}
 
-// ===============================
-// Initial State
-// ===============================
-
-sendBtn.disabled = true;
-
-loadChat();
-
-scrollBottom();
-
-// ===============================
-// Auto Resize On Window
-// ===============================
-
-window.addEventListener("resize", () => {
-
-    scrollBottom();
-
-});
-
-// ===============================
-// App Loaded
-// ===============================
-
-console.log("Novexa AI Loaded Successfully");
-// ===============================
-// Send Button
-// ===============================
+/* ==========================================
+   EVENTS
+========================================== */
 
 sendBtn.addEventListener("click", sendMessage);
-
-// ===============================
-// Enter Key
-// ===============================
 
 userInput.addEventListener("keydown", (e) => {
 
@@ -384,7 +365,119 @@ userInput.addEventListener("keydown", (e) => {
     }
 
 });
-// ==========================================
-// END OF SCRIPT.JS
-// ==========================================
- 
+
+/* ==========================================
+   APP START
+========================================== */
+
+window.addEventListener("load", () => {
+
+    loadChat();
+
+    updateSendButton();
+
+    scrollToBottom();
+
+});
+
+/* ==========================================
+   READY
+========================================== */
+
+console.log(`${APP.NAME} v${APP.VERSION} Loaded`);
+/* ==========================================
+   NOVEXA AI
+   SCRIPT.JS
+   PART 2
+   AI REQUEST
+========================================== */
+
+async function sendMessage() {
+
+    const message = userInput.value.trim();
+
+    if (!message) return;
+
+    if (state.loading) return;
+
+    state.loading = true;
+
+    updateSendButton();
+
+    createMessage(message, "user");
+
+    addToMemory("user", message);
+
+    userInput.value = "";
+
+    showTyping();
+
+    try {
+
+        const response = await fetch(APP.API_URL, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                message: message
+            })
+
+        });
+
+        const data = await response.json();
+
+        hideTyping();
+
+        if (!response.ok) {
+
+            createMessage(
+
+                data.error || "Server Error",
+
+                "ai"
+
+            );
+
+            return;
+
+        }
+
+        const reply = data.reply || "No response received.";
+
+        createMessage(reply, "ai");
+
+        addToMemory("assistant", reply);
+
+    } catch (error) {
+
+        console.error(error);
+
+        hideTyping();
+
+        createMessage(
+
+            "Connection Error. Please check your internet and try again.",
+
+            "ai"
+
+        );
+
+    } finally {
+
+        state.loading = false;
+
+        updateSendButton();
+
+        userInput.focus();
+
+    }
+
+}
+
+/* ==========================================
+   END PART 2
+========================================== */
