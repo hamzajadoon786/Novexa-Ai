@@ -1,24 +1,74 @@
- Novexa AI
+ <!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novexa AI</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fa-solid fa-robot"></i>
+          <span>Novexa AI</span>
+        </div>
+        <button id="close-sidebar-btn" class="icon-btn mobile-only"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <button id="new-chat-btn" class="btn btn-primary">
+        <i class="fa-solid fa-plus"></i> New Chat
+      </button>
+      <div class="history-list" id="history-list"></div>
+    </aside>
 
- New Chat
- Import Chat  Export as TXT  Export as PDF  Settings
-Chat History
-Online
+    <main class="main-chat">
+      <header class="chat-header">
+        <div class="header-left">
+          <button id="toggle-sidebar-btn" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+          <h1 class="chat-title">Novexa Workspace</h1>
+        </div>
+        <div class="header-right">
+          <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
+            <i class="fa-solid fa-sun"></i>
+          </button>
+        </div>
+      </header>
 
-Novexa AI
- 
-Welcome to Novexa AI
-Start a conversation, upload an image, or use your voice.
+      <div class="chat-messages" id="chat-messages">
+        <div class="welcome-container" id="welcome-container">
+          <div class="welcome-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+          <h2>Welcome to Novexa AI</h2>
+          <p>An intelligent workspace powered by Mistral AI. Ask anything, upload an image, or use your voice.</p>
+        </div>
+      </div>
 
- Drop files to upload
- 
-Message Novexa AI…
- 
-Novexa AI can make mistakes. Verify important information.
- Settings
-
-Text-to-Speech responses 
-Enable voice input 
-Font size 
-Medium
-
+      <div class="chat-footer">
+        <div id="preview-container" class="preview-container hidden">
+          <div class="preview-wrapper">
+            <img id="image-preview" src="" alt="Upload preview">
+            <button id="remove-image-btn" class="remove-btn"><i class="fa-solid fa-circle-xmark"></i></button>
+          </div>
+        </div>
+        <form class="input-form" id="chat-form">
+          <label for="image-input" class="icon-btn" title="Upload Image">
+            <i class="fa-solid fa-paperclip"></i>
+            <input type="file" id="image-input" accept="image/*" hidden>
+          </label>
+          <input type="text" id="user-input" placeholder="Message Novexa..." autocomplete="off" required>
+          <button type="button" id="voice-btn" class="icon-btn" title="Voice Input">
+            <i class="fa-solid fa-microphone"></i>
+          </button>
+          <button type="submit" id="send-btn" class="icon-btn btn-send" title="Send Message">
+            <i class="fa-solid fa-arrow-up"></i>
+          </button>
+        </form>
+      </div>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+   </html>
