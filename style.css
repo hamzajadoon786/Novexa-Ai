@@ -690,3 +690,7 @@ body, html {
   .mobile-only { display: flex; }
   .message-wrapper { max-width: 95%; }
   }
+/* Core Utility Rules */
+.hidden {
+  display: none !important;
+}
