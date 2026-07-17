@@ -8,7 +8,7 @@ Novexa AI is a production-ready, ultra-modern progressive web interface structur
 - **Bi-Directional Voice Layer**: Full native audio capturing pipeline and dynamic markdown-stripped semantic Text-To-Speech engine.
 - **Local Isolation Storage**: Retain secure historical chat layout snapshots across context restarts instantly.
 
-## Installation & Deployment
+## Installation & Deployment 
 
 1. Install system architecture dependencies:
    ```bash
