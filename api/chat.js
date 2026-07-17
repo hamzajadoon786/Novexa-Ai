@@ -1,68 +1,76 @@
-export default async function handler(req, res) {
+export const config = { runtime: 'edge' };
+
+export default async function handler(req) {
   if (req.method !== 'POST') {
-    return res.status(455).json({ error: 'Method not allowed' });
+    return new Response(JSON.stringify({ error: 'Method disallowed' }), { status: 405, headers: { 'Content-Type': 'application/json' } });
   }
 
   const apiKey = process.env.MISTRAL_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: 'Mistral API key is missing on the server environment.' });
+    return new Response(JSON.stringify({ error: 'Mistral Core token unconfigured' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 
   try {
-    const { messages, image } = req.body;
+    const { messages, image, document, model, webSearch } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
-      return res.status(400).json({ error: 'Invalid or missing messages array.' });
+      return new Response(JSON.stringify({ error: 'Malformed payload matrix' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
-    let model = 'mistral-large-latest';
-    let payloadContent = [];
+    let targetingModel = model || 'mistral-large-latest';
+    let contentStream = [];
+    const lastMessage = messages[messages.length - 1];
 
-    const lastUserMessage = messages[messages.length - 1];
-    
     if (image && typeof image === 'string' && image.startsWith('data:image/')) {
-      model = 'pixtral-12b-latest';
-      payloadContent.push({ type: 'text', text: lastUserMessage.content });
-      payloadContent.push({ type: 'image_url', image_url: { url: image } });
+      targetingModel = 'pixtral-12b-latest';
+      contentStream.push({ type: 'text', text: lastMessage.content });
+      contentStream.push({ type: 'image_url', image_url: { url: image } });
+    } else if (document && document.content) {
+      contentStream = `Context from attached artifact [File: ${document.name}]:\n"""\n${document.content}\n"""\n\nPrompt: ${lastMessage.content}`;
     } else {
-      payloadContent = lastUserMessage.content;
+      contentStream = lastMessage.content;
     }
 
-    const formattedMessages = [
-      ...messages.slice(0, -1).map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'assistant',
-        content: msg.content
+    if (webSearch) {
+      contentStream = `[System directive: Execute web search validation optimization prior to resolving prompt.] ${typeof contentStream === 'string' ? contentStream : lastMessage.content}`;
+    }
+
+    const payloadMessages = [
+      ...messages.slice(0, -1).map(m => ({
+        role: m.role === 'user' ? 'user' : 'assistant',
+        content: m.content
       })),
-      {
-        role: 'user',
-        content: payloadContent
-      }
+      { role: 'user', content: contentStream }
     ];
 
-    const mistralResponse = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: model,
-        messages: formattedMessages,
-        temperature: 0.7,
-        max_tokens: 2048
+        model: targetingModel,
+        messages: payloadMessages,
+        temperature: 0.2,
+        stream: true
       })
     });
 
-    if (!mistralResponse.ok) {
-      const errorData = await mistralResponse.json();
-      return res.status(mistralResponse.status).json({ error: errorData.message || 'Mistral API request failed' });
+    if (!response.ok) {
+      const errTxt = await response.text();
+      return new Response(JSON.stringify({ error: `Mistral communication barrier: ${errTxt}` }), { status: response.status, headers: { 'Content-Type': 'application/json' } });
     }
 
-    const data = await mistralResponse.json();
-    const assistantReply = data.choices[0].message.content;
+    return new Response(response.body, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+      }
+    });
 
-    return res.status(200).json({ reply: assistantReply });
   } catch (error) {
-    return res.status(500).json({ error: error.message || 'Internal Server Error' });
+    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
-                                 }
+        }
