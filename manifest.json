@@ -1,25 +1,26 @@
 {
-  "name": "Novexa AI",
-  "short_name": "Novexa",
-  "description": "The Future of AI",
-  "start_url": "./",
-  "scope": "./",
-  "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#2563eb",
-  "orientation": "portrait",
+  "short_name": "Novexa AI",
+  "name": "Novexa AI Assistant",
   "icons": [
     {
-      "src": "assets/icon-192.png",
-      "sizes": "192x192",
+      "src": "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f916.png",
       "type": "image/png",
-      "purpose": "any maskable"
+      "sizes": "72x72"
     },
     {
-      "src": "assets/icon-512.png",
-      "sizes": "512x512",
+      "src": "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/192x192/1f916.png",
       "type": "image/png",
-      "purpose": "any maskable"
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/512x512/1f916.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
-  ]
+  ],
+  "start_url": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "display": "standalone",
+  "orientation": "portrait"
 }
