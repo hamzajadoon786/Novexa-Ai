@@ -1,13 +1,11 @@
 {
   "version": 2,
+  "framework": null,
   "routes": [
-    {
-      "src": "/api/chat",
-      "dest": "/api/chat.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
+    { "src": "/api/chat", "dest": "/api/chat.js" },
+    { "src": "/api/task", "dest": "/api/task.js" },
+    { "src": "/manifest.json", "dest": "/manifest.json" },
+    { "src": "/sw.js", "dest": "/sw.js" },
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }
