@@ -1,13 +1,14 @@
 {
   "name": "novexa-ai",
-  "version": "1.0.0",
-  "description": "Novexa AI - Advanced AI Chat Interface powered by Mistral AI",
+  "version": "2.0.0",
+  "description": "Novexa AI - Multi-Modal Advanced Cognitive Workspace Framework",
   "main": "api/chat.js",
   "scripts": {
-    "start": "vercel dev"
+    "start": "vercel dev",
+    "build": "echo 'Ready for compilation layer'"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.1.0"
+    "firebase": "^10.12.0"
   },
   "devDependencies": {
     "vercel": "^37.0.0"
