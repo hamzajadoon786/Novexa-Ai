@@ -1,20 +1,49 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut, 
+  sendPasswordResetEmail,
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs, 
+  query, 
+  where, 
+  orderBy, 
+  limit 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDB0hTBsZao7uoV_bcEf4r1Jm8hrSvfR9E",
-  authDomain: "novexa-ai-63e9f.firebaseapp.com",
-  projectId: "novexa-ai-63e9f",
-  storageBucket: "novexa-ai-63e9f.firebasestorage.app",
-  messagingSenderId: "963834669210",
-  appId: "1:963834669210:web:7c5afebf17da3bce575723",
-  measurementId: "G-NQV0305WGK"
+  apiKey: window.NOVEXA_CONFIG?.apiKey || "YOUR_FIREBASE_API_KEY",
+  authDomain: window.NOVEXA_CONFIG?.authDomain || "YOUR_FIREBASE_AUTH_DOMAIN",
+  projectId: window.NOVEXA_CONFIG?.projectId || "YOUR_FIREBASE_PROJECT_ID",
+  storageBucket: window.NOVEXA_CONFIG?.storageBucket || "YOUR_FIREBASE_STORAGE_BUCKET",
+  messagingSenderId: window.NOVEXA_CONFIG?.messagingSenderId || "YOUR_FIREBASE_MESSAGING_SENDER_ID",
+  appId: window.NOVEXA_CONFIG?.appId || "YOUR_FIREBASE_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const analytics = getAnalytics(app);
+export {
+  auth,
+  db,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit
+};
