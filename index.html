@@ -1,143 +1,246 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Novexa AI - Professional Assistant Platform</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1e293b">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novexa AI - Ultimate Assistant Platform</title>
+    <!-- Tailwind CSS for utility structural styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-weight/6.4.0/css/all.min.css">
+    <!-- PWA Web Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 transition-colors duration-300 font-['Inter']">
 
-  <div id="toast-container" class="toast-container"></div>
+    <!-- Firebase SDK App & Auth stub (initialized in script.js) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-  <div id="app-global-loader" class="global-loader hidden">
-    <div class="spinner"></div>
-    <p>Connecting to secure infrastructure...</p>
-  </div>
-
-  <div id="auth-screen" class="auth-wrapper">
-    <div class="auth-card">
-      <div class="auth-header">
-        <h1>Novexa AI</h1>
-        <p id="auth-subtitle">Sign in to your professional workspace</p>
-      </div>
-      
-      <form id="auth-form">
-        <div class="input-group">
-          <label for="auth-email">Email Address</label>
-          <input type="email" id="auth-email" required placeholder="name@company.com">
-        </div>
+    <!-- App Shell Layout -->
+    <div class="flex h-screen overflow-hidden">
         
-        <div class="input-group" id="pass-field-group">
-          <label for="auth-password">Password</label>
-          <input type="password" id="auth-password" required placeholder="••••••••">
-        </div>
-
-        <div class="input-group hidden" id="confirm-pass-field-group">
-          <label for="auth-confirm-password">Confirm Password</label>
-          <input type="password" id="auth-confirm-password" placeholder="••••••••">
-        </div>
-
-        <button type="submit" id="auth-submit-btn" class="btn btn-primary">Sign In</button>
-      </form>
-
-      <div class="auth-actions">
-        <button id="auth-toggle-mode-btn" class="btn-link">Create Account</button>
-        <button id="auth-forgot-btn" class="btn-link">Forgot Password</button>
-      </div>
-
-      <div class="divider"><span>or</span></div>
-
-      <button id="auth-guest-btn" class="btn btn-secondary">Continue as Guest</button>
-    </div>
-  </div>
-
-  <div id="app-screen" class="app-layout hidden">
-    
-    <aside class="app-sidebar" id="app-sidebar">
-      <div class="sidebar-top">
-        <button id="new-chat-btn" class="btn btn-primary-outline w-full">+ New Chat</button>
-      </div>
-      
-      <div class="sidebar-history" id="chat-history-container"></div>
-
-      <div class="sidebar-utilities">
-        <h4>Workspace Tools</h4>
-        <button class="tool-chip" data-tool="writing">Writing Assistant</button>
-        <button class="tool-chip" data-tool="code">Code Assistant</button>
-        <button class="tool-chip" data-tool="translate">Translation Tool</button>
-        <button class="tool-chip" data-tool="resume">Resume Builder</button>
-        <button class="tool-chip" data-tool="business">Business Tools</button>
-      </div>
-      
-      <div class="sidebar-footer">
-        <div class="user-profile-widget">
-          <span class="user-avatar" id="profile-avatar">G</span>
-          <div class="user-meta">
-            <span id="profile-name" class="profile-name">Guest Mode</span>
-            <button id="logout-action-btn" class="btn-link text-xs">Exit Workspace</button>
-          </div>
-        </div>
-        <div class="sys-settings-row">
-          <button id="theme-toggle-btn" class="btn-icon" title="Toggle Appearance">🌓</button>
-          <button id="pwa-install-btn" class="btn-icon hidden" title="Install Workspace App">📥</button>
-        </div>
-      </div>
-    </aside>
-
-    <main class="main-workspace">
-      <header class="workspace-header">
-        <button id="sidebar-toggle-mobile" class="btn-icon mobile-only">☰</button>
-        <div class="header-title-stack">
-          <h2>Central Engine Core</h2>
-          <span id="workspace-status" class="status-badge">Secure Local State</span>
-        </div>
-      </header>
-
-      <section class="messages-viewport" id="chat-viewport">
-        <div class="empty-state-card" id="empty-state">
-          <h3>Welcome to Novexa AI Engine</h3>
-          <p>Deploy specialized commands using the side toolsets or start an open session below.</p>
-        </div>
-      </section>
-
-      <div id="attachment-preview-bar" class="attachment-preview-bar hidden">
-        <span id="attachment-name">document.pdf</span>
-        <button id="attachment-clear-btn" class="btn-icon-xs">×</button>
-      </div>
-
-      <footer class="input-panel-container">
-        <div class="input-toolbar-wrapper">
-          <div class="input-row">
-            <textarea id="chat-textarea" placeholder="Send an instruction, upload system logs or document assets..." rows="1"></textarea>
-            
-            <div class="input-actions-cluster">
-              <label class="btn-icon" title="Upload Document File" for="file-upload-pdf">
-                📄
-                <input type="file" id="file-upload-pdf" accept=".pdf" class="hidden-input">
-              </label>
-              
-              <label class="btn-icon" title="Upload Visual Asset" for="file-upload-img">
-                📷
-                <input type="file" id="file-upload-img" accept="image/*" class="hidden-input">
-              </label>
-
-              <button id="voice-input-btn" class="btn-icon" title="Activate Audio Context capture">🎤</button>
-              <button id="message-send-btn" class="btn-send" title="Transmit Sequence">➔</button>
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col z-20 transition-transform duration-300 md:translate-x-0 -translate-x-full absolute md:relative h-full">
+            <div class="p-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">N</div>
+                    <span class="font-bold text-lg tracking-tight">Novexa AI</span>
+                </div>
+                <button id="close-sidebar-btn" class="md:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-          </div>
-        </div>
-      </footer>
-    </main>
 
-  </div>
+            <!-- Module Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto p-3 space-y-1">
+                <button data-target="mod-chat" class="nav-btn active flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-comment-alt w-5 text-indigo-500"></i> AI Chat
+                </button>
+                <button data-target="mod-voice" class="nav-btn flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-microphone w-5 text-emerald-500"></i> Voice Chat
+                </button>
+                <button data-target="mod-writing" class="nav-btn flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-pen-fancy w-5 text-amber-500"></i> AI Writing
+                </button>
+                <button data-target="mod-translation" class="nav-btn flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-language w-5 text-blue-500"></i> Translation
+                </button>
+                <button data-target="mod-document" class="nav-btn flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-file-pdf w-5 text-rose-500"></i> PDF & OCR Chat
+                </button>
+                
+                <div class="pt-4 pb-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Creative Suites</div>
+                
+                <button data-target="mod-image" class="nav-btn flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-image w-5 text-purple-500"></i> AI Image Gen
+                </button>
+                <button data-target="mod-video" class="nav-btn flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-video w-5 text-fuchsia-500"></i> AI Video Gen
+                </button>
+                <button data-target="mod-music" class="nav-btn flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-music w-5 text-cyan-500"></i> AI Music Gen
+                </button>
+                <button data-target="mod-editor" class="nav-btn flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-film w-5 text-orange-500"></i> Video Editor
+                </button>
+            </nav>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/dist/tesseract.min.js"></script>
-  
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="script.js"></script>
-</body>
-            </html>
+            <!-- User Auth Profile Footbar -->
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+                <div id="auth-loading" class="text-xs text-center text-slate-400">Syncing authentication...</div>
+                <div id="auth-unauthenticated" class="hidden">
+                    <button id="login-trigger-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i> Sign In / Register
+                    </button>
+                </div>
+                <div id="auth-authenticated" class="hidden flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <div id="user-avatar" class="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center text-indigo-600 font-semibold border border-indigo-200 dark:border-indigo-800 text-sm">U</div>
+                        <div class="truncate">
+                            <div id="user-name" class="text-xs font-semibold truncate">User Profile</div>
+                            <div id="user-email" class="text-[10px] text-slate-400 truncate">user@novexa.ai</div>
+                        </div>
+                    </div>
+                    <button id="logout-btn" class="text-slate-400 hover:text-rose-500 p-1.5 rounded transition-colors" title="Log Out">
+                        <i class="fas fa-power-off"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="flex-1 flex flex-col overflow-hidden relative">
+            
+            <!-- Global Top Header Bar -->
+            <header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 flex items-center justify-between z-10">
+                <div class="flex items-center gap-3">
+                    <button id="menu-toggle-btn" class="md:hidden text-slate-600 dark:text-slate-300 p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="current-module-title" class="text-lg font-semibold tracking-tight">AI Chat Dashboard</h1>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <!-- Dark/Light Theme Toggle -->
+                    <button id="theme-toggle-btn" class="p-2 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                    <!-- Cloud Sync Indicator Status -->
+                    <div id="sync-status" class="text-xs text-slate-400 flex items-center gap-1.5 px-2 py-1 rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Local Mode
+                    </div>
+                </div>
+            </header>
+
+            <!-- Active View Switcher Window Grid -->
+            <div id="module-container" class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50 dark:bg-slate-950">
+                
+                <!-- 1. AI CHAT MODULE -->
+                <section id="mod-chat" class="module-view h-full flex flex-col max-w-5xl mx-auto bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <div id="chat-history" class="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div class="ai-msg bg-slate-50 dark:bg-slate-950/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800/60 max-w-[85%]">
+                            Hello! I am Novexa's upgraded AI core engine powered securely by Mistral. How can I assist you with your work, coding, or strategy today?
+                        </div>
+                    </div>
+                    <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+                        <form id="chat-form" class="flex gap-2">
+                            <input type="text" id="chat-input" placeholder="Ask anything..." class="flex-1 bg-white dark:bg-slate-950 px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- 2. VOICE CHAT MODULE -->
+                <section id="mod-voice" class="module-view hidden h-full flex flex-col items-center justify-center max-w-xl mx-auto text-center space-y-6">
+                    <div class="w-32 h-32 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border-2 border-indigo-200 dark:border-indigo-800 flex items-center justify-center relative">
+                        <div id="voice-pulse" class="absolute inset-0 rounded-full bg-indigo-500/10 hidden animate-ping"></div>
+                        <i class="fas fa-microphone text-4xl text-indigo-600 dark:text-indigo-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">Real-time Conversational Voice</h3>
+                        <p class="text-slate-500 text-sm mt-1">Talk naturally to your assistant. Your speech will be recognized, answered, and read out loud using text-to-speech engine rules.</p>
+                    </div>
+                    <div class="flex items-center gap-3 w-full">
+                        <button id="voice-start-btn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl shadow transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-play"></i> Start Session
+                        </button>
+                        <button id="voice-stop-btn" class="flex-1 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 font-medium py-3 rounded-xl transition-all flex items-center justify-center gap-2" disabled>
+                            <i class="fas fa-stop"></i> End Session
+                        </button>
+                    </div>
+                    <div id="voice-transcript" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl min-h-[80px] text-left text-sm italic text-slate-400">
+                        Transcript will display here...
+                    </div>
+                </section>
+
+                <!-- 3. AI WRITING MODULE -->
+                <section id="mod-writing" class="module-view hidden h-full grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
+                        <h3 class="font-bold text-sm text-slate-400 uppercase tracking-wider">Composition Parameters</h3>
+                        <div>
+                            <label class="block text-xs font-medium mb-1">Select Output Type</label>
+                            <select id="writing-type" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                <option value="essay">Professional Essay</option>
+                                <option value="email">Business Email Correspondence</option>
+                                <option value="code">Refactored Code Block / Script</option>
+                                <option value="resume">Targeted Technical Resume</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium mb-1">Tone & Persona</label>
+                            <select id="writing-tone" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                <option value="professional">Formal Professional</option>
+                                <option value="casual">Conversational</option>
+                                <option value="technical">Highly Technical & Academic</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium mb-1">Core Topic Instructions / Rules</label>
+                            <textarea id="writing-prompt" rows="6" placeholder="Provide instructions, explicit outline, or base text..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></textarea>
+                        </div>
+                        <button id="writing-generate-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2.5 rounded-lg transition-colors shadow">Generate Document</button>
+                    </div>
+                    <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex flex-col overflow-hidden">
+                        <div class="p-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
+                            <span class="text-sm font-medium">Output Workspace</span>
+                            <button id="writing-copy-btn" class="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded shadow-sm hover:bg-slate-50">Copy Text</button>
+                        </div>
+                        <textarea id="writing-output" class="flex-1 p-4 bg-white dark:bg-slate-900 font-mono text-sm focus:outline-none resize-none" readonly placeholder="Your generated document will appear here..."></textarea>
+                    </div>
+                </section>
+
+                <!-- 4. TRANSLATION MODULE -->
+                <section id="mod-translation" class="module-view hidden h-full flex flex-col gap-4 max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+                        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col">
+                            <div class="p-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                                <span class="text-sm font-medium">Source Language</span>
+                                <select id="trans-source" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs rounded p-1">
+                                    <option value="auto">Auto Detect</option>
+                                    <option value="en">English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                    <option value="de">German</option>
+                                    <option value="zh">Chinese</option>
+                                </select>
+                            </div>
+                            <textarea id="trans-input" class="flex-1 p-4 bg-transparent text-sm focus:outline-none resize-none" placeholder="Type or paste content to translate..."></textarea>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col">
+                            <div class="p-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                                <span class="text-sm font-medium">Target Language</span>
+                                <select id="trans-target" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs rounded p-1">
+                                    <option value="es">Spanish</option>
+                                    <option value="en">English</option>
+                                    <option value="fr">French</option>
+                                    <option value="de">German</option>
+                                    <option value="zh">Chinese</option>
+                                </select>
+                            </div>
+                            <textarea id="trans-output" class="flex-1 p-4 bg-transparent text-sm focus:outline-none resize-none" readonly placeholder="Translation output window..."></textarea>
+                        </div>
+                    </div>
+                    <button id="trans-execute-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl shadow transition-colors">Translate Content</button>
+                </section>
+
+                <!-- 5. PDF & OCR CHAT MODULE -->
+                <section id="mod-document" class="module-view hidden h-full grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-sm text-slate-400 uppercase tracking-wider">Document Processing Core</h3>
+                            <div class="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-6 text-center hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors relative cursor-pointer">
+                                <input type="file" id="doc-file-input" accept=".pdf,image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-slate-300 dark:text-slate-700 mb-2"></i>
+                                <div class="text-sm font-medium" id="doc-file-status">Upload PDF or Document Image</div>
+                                <div class="text-[11px] text-slate-400 mt-1">Automatic optical character recognition parsing applies</div>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs font-semibold text-slate-400">Extracted Context Metadata Window</label>
+                                <div id="doc-extrac
