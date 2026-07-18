@@ -2,181 +2,142 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Novexa AI | Quantum Matrix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novexa AI - Professional Assistant Platform</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e293b">
 </head>
 <body>
-  <div class="app-container">
-    
-    <!-- AUTHENTICATION OVERLAY ELEMENT -->
-    <div id="auth-overlay" class="auth-overlay">
-      <div class="auth-card">
-        <div class="auth-logo"><i class="fa-solid fa-square-rss"></i> Novexa Unified Security</div>
-        <p class="auth-subtitle">Log in to sync with cloud nodes</p>
-        <div id="auth-error" class="auth-error hidden"></div>
-        <input type="email" id="auth-email" placeholder="Identity Email Node Address" required />
-        <input type="password" id="auth-password" placeholder="Passphrase Secret Access Key" required />
-        <div class="auth-actions">
-          <button id="btn-login" class="btn btn-primary">Authenticate Connection</button>
-          <button id="btn-register" class="btn">Register Matrix Instance</button>
-        </div>
-        <button id="btn-guest-bypass" class="guest-link">Bypass into Local Standalone Sandbox</button>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <div id="app-global-loader" class="global-loader hidden">
+    <div class="spinner"></div>
+    <p>Connecting to secure infrastructure...</p>
+  </div>
+
+  <div id="auth-screen" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Novexa AI</h1>
+        <p id="auth-subtitle">Sign in to your professional workspace</p>
       </div>
+      
+      <form id="auth-form">
+        <div class="input-group">
+          <label for="auth-email">Email Address</label>
+          <input type="email" id="auth-email" required placeholder="name@company.com">
+        </div>
+        
+        <div class="input-group" id="pass-field-group">
+          <label for="auth-password">Password</label>
+          <input type="password" id="auth-password" required placeholder="••••••••">
+        </div>
+
+        <div class="input-group hidden" id="confirm-pass-field-group">
+          <label for="auth-confirm-password">Confirm Password</label>
+          <input type="password" id="auth-confirm-password" placeholder="••••••••">
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="btn btn-primary">Sign In</button>
+      </form>
+
+      <div class="auth-actions">
+        <button id="auth-toggle-mode-btn" class="btn-link">Create Account</button>
+        <button id="auth-forgot-btn" class="btn-link">Forgot Password</button>
+      </div>
+
+      <div class="divider"><span>or</span></div>
+
+      <button id="auth-guest-btn" class="btn btn-secondary">Continue as Guest</button>
     </div>
+  </div>
 
-    <!-- SIDE PANEL COMPONENT -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">
-          <i class="fa-solid fa-bolt-lightning"></i>
-          <span>Novexa Core v2</span>
-        </div>
-        <button id="close-sidebar-btn" class="icon-btn mobile-only"><i class="fa-solid fa-chevron-left"></i></button>
+  <div id="app-screen" class="app-layout hidden">
+    
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-top">
+        <button id="new-chat-btn" class="btn btn-primary-outline w-full">+ New Chat</button>
       </div>
+      
+      <div class="sidebar-history" id="chat-history-container"></div>
 
-      <div class="user-profile-badge" id="user-badge">
-        <div class="avatar"><i class="fa-solid fa-user-shield"></i></div>
-        <div class="user-meta-info">
-          <div id="profile-name" class="user-name">Local Operator</div>
-          <button id="btn-logout" class="logout-link">Disconnect Matrix</button>
-        </div>
+      <div class="sidebar-utilities">
+        <h4>Workspace Tools</h4>
+        <button class="tool-chip" data-tool="writing">Writing Assistant</button>
+        <button class="tool-chip" data-tool="code">Code Assistant</button>
+        <button class="tool-chip" data-tool="translate">Translation Tool</button>
+        <button class="tool-chip" data-tool="resume">Resume Builder</button>
+        <button class="tool-chip" data-tool="business">Business Tools</button>
       </div>
-
-      <button id="new-chat-btn" class="btn btn-primary">
-        <i class="fa-solid fa-atom"></i> New Workspace Node
-      </button>
-
-      <div class="search-box-wrapper">
-        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" id="search-history" placeholder="Filter node clusters...">
-      </div>
-
-      <div class="history-list" id="history-list"></div>
       
       <div class="sidebar-footer">
-        <button id="btn-open-settings" class="sidebar-footer-btn"><i class="fa-solid fa-sliders"></i> System Config</button>
-        <button id="btn-open-tools" class="sidebar-footer-btn"><i class="fa-solid fa-screwdriver-wrench"></i> Expert Suites</button>
+        <div class="user-profile-widget">
+          <span class="user-avatar" id="profile-avatar">G</span>
+          <div class="user-meta">
+            <span id="profile-name" class="profile-name">Guest Mode</span>
+            <button id="logout-action-btn" class="btn-link text-xs">Exit Workspace</button>
+          </div>
+        </div>
+        <div class="sys-settings-row">
+          <button id="theme-toggle-btn" class="btn-icon" title="Toggle Appearance">🌓</button>
+          <button id="pwa-install-btn" class="btn-icon hidden" title="Install Workspace App">📥</button>
+        </div>
       </div>
     </aside>
 
-    <!-- CORE EXECUTION PANEL -->
-    <main class="main-chat">
-      <header class="chat-header">
-        <div class="header-left">
-          <button id="toggle-sidebar-btn" class="icon-btn"><i class="fa-solid fa-bars-staggered"></i></button>
-          <div class="model-select-wrapper">
-            <i class="fa-solid fa-brain"></i>
-            <select id="model-selector">
-              <option value="mistral-large-latest">Mistral Large Intellect Core</option>
-              <option value="open-mixtral-8x22b">Mixtral Speed Matrix</option>
-              <option value="pixtral-12b-latest">Pixtral Vision Engine</option>
-              <option value="codestral-latest">Codestral Synthesizer</option>
-            </select>
-          </div>
-        </div>
-        <div class="header-right">
-          <button id="search-activation-btn" class="icon-btn" title="Toggle Search Framework Engine"><i class="fa-solid fa-earth-americas"></i></button>
-          <button id="theme-toggle" class="icon-btn"><i class="fa-solid fa-circle-half-stroke"></i></button>
+    <main class="main-workspace">
+      <header class="workspace-header">
+        <button id="sidebar-toggle-mobile" class="btn-icon mobile-only">☰</button>
+        <div class="header-title-stack">
+          <h2>Central Engine Core</h2>
+          <span id="workspace-status" class="status-badge">Secure Local State</span>
         </div>
       </header>
 
-      <div class="chat-messages" id="chat-messages">
-        <div class="welcome-container" id="welcome-container">
-          <div class="welcome-icon"><i class="fa-solid fa-cubes"></i></div>
-          <h2>Novexa AI Workspace Terminal</h2>
-          <p>Multi-modal contextual processing stream activated. Deploy custom tool components via bottom nodes.</p>
-          <div class="suggestion-chips-grid" id="suggestion-grid">
-            <div class="chip" data-prompt="Draft an itemized executive summary for a standard hybrid SaaS subscription structure.">SaaS Business Structure</div>
-            <div class="chip" data-prompt="Write an edge runtime serverless endpoint in clean modern JavaScript checking authentication tokens.">Edge Runtime Endpoint</div>
-            <div class="chip" data-prompt="Analyze standard core optimization metrics to enhance visual painting speeds in client layouts.">Layout Performance</div>
+      <section class="messages-viewport" id="chat-viewport">
+        <div class="empty-state-card" id="empty-state">
+          <h3>Welcome to Novexa AI Engine</h3>
+          <p>Deploy specialized commands using the side toolsets or start an open session below.</p>
+        </div>
+      </section>
+
+      <div id="attachment-preview-bar" class="attachment-preview-bar hidden">
+        <span id="attachment-name">document.pdf</span>
+        <button id="attachment-clear-btn" class="btn-icon-xs">×</button>
+      </div>
+
+      <footer class="input-panel-container">
+        <div class="input-toolbar-wrapper">
+          <div class="input-row">
+            <textarea id="chat-textarea" placeholder="Send an instruction, upload system logs or document assets..." rows="1"></textarea>
+            
+            <div class="input-actions-cluster">
+              <label class="btn-icon" title="Upload Document File" for="file-upload-pdf">
+                📄
+                <input type="file" id="file-upload-pdf" accept=".pdf" class="hidden-input">
+              </label>
+              
+              <label class="btn-icon" title="Upload Visual Asset" for="file-upload-img">
+                📷
+                <input type="file" id="file-upload-img" accept="image/*" class="hidden-input">
+              </label>
+
+              <button id="voice-input-btn" class="btn-icon" title="Activate Audio Context capture">🎤</button>
+              <button id="message-send-btn" class="btn-send" title="Transmit Sequence">➔</button>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- STREAM CONTAINER INTERACTIVE INTERFACE LAYER -->
-      <div class="chat-footer">
-        <div id="preview-container" class="preview-container hidden">
-          <div class="preview-wrapper" id="artifact-previews-grid"></div>
-        </div>
-        
-        <form class="input-form" id="chat-form">
-          <label for="file-upload-input" class="icon-btn" title="Attach multi-modal artifact stream">
-            <i class="fa-solid fa-link"></i>
-            <input type="file" id="file-upload-input" accept="image/*,.pdf,.docx,.txt,.csv,.xlsx,.pptx" hidden>
-          </label>
-          <input type="text" id="user-input" placeholder="Transmit telemetry commands to Novexa node..." autocomplete="off" required>
-          <button type="button" id="voice-btn" class="icon-btn" title="Initiate native speech stream"><i class="fa-solid fa-microphone"></i></button>
-          <button type="submit" id="send-btn" class="icon-btn btn-send"><i class="fa-solid fa-satellite-dish"></i></button>
-        </form>
-      </div>
+      </footer>
     </main>
 
-    <!-- SETTINGS AND EXTENSIONS OVERLAY SYSTEM -->
-    <div id="settings-modal" class="modal-overlay hidden">
-      <div class="modal-card">
-        <h3><i class="fa-solid fa-gears"></i> Novexa Parameter Matrix</h3>
-        <hr class="modal-divider">
-        <div class="control-row">
-          <label>Speech Generation Profile</label>
-          <select id="voice-selection-profile"></select>
-        </div>
-        <div class="control-row">
-          <label>Interface Font Metrics</label>
-          <select id="ui-scale-profile">
-            <option value="compact">Compact Matrix Layout</option>
-            <option value="standard" selected>Standard Balanced Matrix</option>
-          </select>
-        </div>
-        <div class="control-row">
-          <label>Cloud Node Sync</label>
-          <button id="btn-force-sync" class="btn">Force Hard Synchronization</button>
-        </div>
-        <button id="btn-close-settings" class="btn btn-primary modal-close-btn">Commit Changes</button>
-      </div>
-    </div>
-
-    <div id="tools-modal" class="modal-overlay hidden">
-      <div class="modal-card tools-card">
-        <h3><i class="fa-solid fa-layer-group"></i> Automated Cognitive Suite Tasks</h3>
-        <p class="tools-subtitle">Execute structural generative pipelines with zero context distortion.</p>
-        <div class="tools-tabs-nav">
-          <button class="tab-nav active" data-tab="tab-writing">Composition</button>
-          <button class="tab-nav" data-tab="tab-coding">Engineering</button>
-          <button class="tab-nav" data-tab="tab-business">Strategy</button>
-          <button class="tab-nav" data-tab="tab-productivity">Productivity</button>
-        </div>
-        
-        <div class="tab-content dynamic-display" id="tab-writing">
-          <button class="tool-action-btn" data-action="grammar" data-instr="Correct grammatical syntax errors seamlessly inside target text context.">Grammar Correction Engine</button>
-          <button class="tool-action-btn" data-action="paraphrase" data-instr="Paraphrase structural elements while optimizing lexical density parameters.">Lexical Paraphraser</button>
-          <button class="tool-action-btn" data-action="translate" data-instr="Convert processing block payload text into requested target language perfectly.">Universal Translator Node</button>
-        </div>
-        <div class="tab-content hidden" id="tab-coding">
-          <button class="tool-action-btn" data-action="debug" data-instr="Identify memory leaks, validation failures, and algorithmic bugs in current scope code block.">Automated Code Debugger</button>
-          <button class="tool-action-btn" data-action="optimize" data-instr="Refactor complexity metrics down using optimized execution loops.">Complexity Optimizer</button>
-        </div>
-        <div class="tab-content hidden" id="tab-business">
-          <button class="tool-action-btn" data-action="swot" data-instr="Generate clean itemized SWOT matrix framework regarding target enterprise concept.">SWOT Analytics Matrix</button>
-          <button class="tool-action-btn" data-action="marketing" data-instr="Develop hyper-targeted customer intent content assets matching target profiles.">Marketing Copy Asset Synthesizer</button>
-        </div>
-        <div class="tab-content hidden" id="tab-productivity">
-          <button class="tool-action-btn" data-action="todo" data-instr="Convert text descriptions into clean actionable structured to-do checklists.">Checklist Structural Engine</button>
-          <button class="tool-action-btn" data-action="summarize" data-instr="Compress input metrics data down into dense informational abstractions.">Context Compression</button>
-        </div>
-
-        <div class="tool-execution-interface">
-          <textarea id="tool-input-payload" placeholder="Insert asset metrics or target operational code script framework..."></textarea>
-          <button id="btn-trigger-tool-operation" class="btn btn-primary">Execute Pipeline Operation</button>
-          <div id="tool-output-box" class="tool-output-container hidden"></div>
-        </div>
-        <button id="btn-close-tools" class="btn modal-close-btn">Exit Suites</button>
-      </div>
-    </div>
-
   </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/dist/tesseract.min.js"></script>
+  
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
-         </html>
+            </html>
