@@ -1,52 +1,48 @@
-const CACHE_NAME = 'novexa-core-v2';
-const OFFLINE_URL = '/index.html';
-
+const CACHE_NAME = 'novexa-ai-v1';
 const ASSETS = [
   '/',
   '/index.html',
   '/style.css',
   '/script.js',
-  '/manifest.json',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://cdn.jsdelivr.net/npm/marked/marked.min.js'
+  '/firebase.js',
+  '/manifest.json'
 ];
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+self.addEventListener('install', (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS);
+    }).then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(
-      keys.map((key) => {
-        if (key !== CACHE_NAME) return caches.delete(key);
-      })
-    ))
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
-  if (event.request.url.includes('/api/') || event.request.url.includes('firestore.googleapis.com')) {
+self.addEventListener('fetch', (e) => {
+  if (e.request.url.includes('/api/')) {
     return;
   }
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
+  e.respondWith(
+    caches.match(e.request).then((cachedResponse) => {
       if (cachedResponse) return cachedResponse;
-      return fetch(event.request).catch(() => caches.match(OFFLINE_URL));
+      return fetch(e.request).catch(() => {
+        if (e.request.mode === 'navigate') {
+          return caches.match('/index.html');
+        }
+      });
     })
   );
 });
-
-self.addEventListener('push', (event) => {
-  const data = event.data ? event.data.json() : { title: 'Novexa Engine', body: 'Workspace matrix state synced.' };
-  event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/192x192/1f916.png'
-    })
-  );
-});
+    
