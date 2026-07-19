@@ -1,1 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+@layer base {
+  :root {
+    --border: 226, 232, 240;
+    --background: 255, 255, 255;
+    --foreground: 15, 23, 42;
+    --surface-base: 248, 250, 252;
+    --surface-muted: 241, 245, 249;
+  }
+
+  .dark {
+    --border: 30, 41, 59;
+    --background: 15, 23, 42;
+    --foreground: 248, 250, 252;
+    --surface-base: 30, 41, 59;
+    --surface-muted: 15, 23, 42;
+  }
+
+  html, body, #root {
+    @apply h-full w-full overflow-hidden select-none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-slate-800 rounded-full;
+    }
