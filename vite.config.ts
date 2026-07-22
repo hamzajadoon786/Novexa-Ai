@@ -1,40 +1,32 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react()
+  ],
   resolve: {
     alias: {
+      // Allows using '@/' for 'src/' imports
       '@': path.resolve(__dirname, './src'),
     },
   },
   build: {
     outDir: 'dist',
-    emptyOutDir: true,
     sourcemap: false,
-    chunkSizeWarningLimit: 1500,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'vendor-core';
-            if (id.includes('lucide')) return 'vendor-ui';
-            return 'vendor-libs';
-          }
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
         },
       },
     },
   },
   server: {
     port: 3000,
-    host: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
+    open: true,
   },
-});
+})
