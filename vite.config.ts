@@ -4,12 +4,9 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react()
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
-      // Allows using '@/' for 'src/' imports
       '@': path.resolve(__dirname, './src'),
     },
   },
@@ -17,16 +14,8 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     chunkSizeWarningLimit: 1000,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-        },
-      },
-    },
   },
   server: {
     port: 3000,
-    open: true,
   },
 })
